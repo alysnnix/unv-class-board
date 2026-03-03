@@ -14,7 +14,6 @@ __pycache__/
 
 # IDEs
 .idea/
-.vscode/
 
 # Django stuff
 *.log
