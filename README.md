@@ -1,103 +1,117 @@
 # Class Board
 
-Este projeto é uma aplicação Django com PostgreSQL focado na **gestão operacional escolar diária**, servindo como um "Painel Interativo" para secretarias e coordenadores.
+This project is a Django application with PostgreSQL focused on **daily operational school management**, serving as an "Interactive Panel" for secretariats and coordinators.
 
-O sistema permite gerenciar horários, alocação de professores e controle de faltas/substituições de forma centralizada e ágil.
+The system allows managing schedules, teacher allocation, and tracking absences/substitutions in a centralized and agile way.
 
-## Módulos do Sistema (Apps)
+## System Modules (Apps)
 
-O projeto é dividido em 4 módulos principais:
+The project architecture is built following SOLID principles and is divided into 4 main modules:
 
-- **Home:** A base do sistema. Serve para cadastrar a infraestrutura da escola: Segmentos (ex: Ensino Fundamental, Médio), Períodos (Manhã, Tarde), Turmas, Professores e as disciplinas (Componentes Curriculares) que eles lecionam.
-- **Grade:** Onde a organização do agendamento acontece. Ele cruza as Turmas com os Professores e os dias da semana para montar a "Grade" (o quadro de horários).
-- **Ocorrência:** O módulo de "gestão de crises". Se um professor falta (`Professor_Ausente`), a secretaria registra o motivo (`Justificativa`) e já aloca um substituto (`Professor_Substituto`) para cobrir a grade.
-- **Mensagem:** Um sistema de comunicação em massa. Permite criar comunicados categorizados (Eventos, Pedagógicos, Administrativos) e direcioná-los para turmas ou professores específicos.
+- **Core (`core`):** The foundation of the system. Used to register the school's infrastructure: Segments (e.g., Elementary, High School), Periods (Morning, Afternoon), Class Groups, Teachers, and the Subjects they teach.
+- **Schedule (`schedule`):** Where the scheduling organization happens. It crosses Class Groups with Teachers and days of the week to build the "Schedule" (timetable).
+- **Attendance (`attendance`):** The "crisis management" module. If a teacher is absent (`TeacherAbsence`), the secretariat registers the reason (`Justification`) and allocates a substitute (`TeacherSubstitution`) to cover the schedule.
+- **Communication (`communication`):** A mass communication system. Allows creating categorized announcements (Events, Pedagogical, Administrative) and directing them to specific classes or teachers.
 
-## Funcionalidades e Fluxos
+## Features and Workflows
 
-A interface do usuário é construída quase totalmente como uma ferramenta de Back-Office (uso interno) utilizando o tema dinâmico **Django Jazzmin** para o Painel Administrativo. As principais funcionalidades incluem:
+The user interface is built almost entirely as a Back-Office tool (internal use) using the dynamic **Django Jazzmin** theme for the Administrative Panel. Key features include:
 
-1. **Gestão via Admin:** Toda a operação (cadastros, montagem de grade, registro de ocorrências) é feita através de uma interface administrativa bonita e responsiva configurada em `config/settings.py`.
-2. **Geração de Relatórios (PDF):** Integração com a biblioteca `ReportLab` que permite exportar listas e registros selecionados no painel diretamente para formato PDF, prontos para impressão.
-3. **Dashboards Visuais:** O projeto conta com a rota `/chart/` (integrada via `django-chartjs`) preparada para exibir gráficos estatísticos com os dados da escola.
+1. **Management via Admin:** All operations (registrations, schedule building, occurrence tracking) are done through a beautiful and responsive administrative interface configured in `config/settings.py`.
+2. **Report Generation (PDF):** Integration with the `ReportLab` library allows exporting selected lists and records in the panel directly to PDF format, ready for printing.
+3. **Visual Dashboards:** The project features a Dashboard located at `/dashboard/` and a dedicated route for charts at `/statistics/` (integrated via `django-chartjs`), ready to display statistical graphs with school data dynamically pulled from the database.
 
 ---
 
-## Requisitos
+## Requirements
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 
-## Como rodar o projeto com Docker (Recomendado)
+## How to run the project with Docker (Recommended)
 
-A forma mais fácil de rodar o projeto sem precisar configurar nada localmente na sua máquina é utilizando o Docker Compose. Ele subirá automaticamente o Banco de Dados e a Aplicação em contêineres separados e conectados.
+The easiest way to run the project without having to configure anything locally on your machine is by using Docker Compose. It will automatically spin up the Database and the Application in separate, connected containers.
 
-### 1. Inicie o projeto
+### 1. Configure the Environment Variables
 
-No terminal, dentro da pasta raiz do projeto, execute o comando:
+Before starting, copy the example environment file and customize it if needed:
+
+```bash
+cp .env.example .env
+```
+*(By default, `.env.example` is already set up to work perfectly with Docker out of the box).*
+
+### 2. Start the project
+
+In your terminal, inside the project's root folder, run:
 
 ```bash
 docker-compose up -d --build
 ```
 
-- Este comando vai baixar as imagens necessárias, construir o contêiner do Django instalando todas as dependências do `requirements.txt`, iniciar o banco de dados e rodar o servidor na porta **8080**.
+- This command will download the necessary images, build the Django container installing all dependencies from `requirements.txt`, start the database, and run the server on port **8080**.
 
-### 2. Execute as migrações
+### 3. Run migrations
 
-Para garantir que a estrutura do banco de dados está atualizada:
+To ensure the database structure is up-to-date:
 
 ```bash
 docker-compose exec web python manage.py migrate
 ```
 
-### 3. Crie um usuário Administrador
+### 4. Create an Administrator user
 
-Você vai precisar de um usuário para acessar o painel administrativo. Crie-o executando o comando abaixo e siga as instruções na tela:
+You will need a user to access the administrative panel. Create one by running the command below and following the on-screen instructions:
 
 ```bash
 docker-compose exec web python manage.py createsuperuser
 ```
 
-### 4. Acesse o sistema
+### 5. Access the system
 
-Abra o seu navegador e acesse:
+Open your browser and navigate to:
 
-[http://localhost:8080/class-board/](http://localhost:8080/class-board/)
+[http://localhost:8080/dashboard/](http://localhost:8080/dashboard/)
 
-- Faça login com o usuário e a senha que você acabou de criar.
-
----
-
-## Comandos Úteis (Docker)
-
-- **Parar o projeto:** `docker-compose down`
-- **Ver os logs da aplicação:** `docker-compose logs -f web`
-- **Acessar o terminal do contêiner Django:** `docker-compose exec web /bin/bash`
-- **Criar novas migrações:** `docker-compose exec web python manage.py makemigrations`
+- Log in with the username and password you just created.
 
 ---
 
-## Como rodar o projeto Localmente (Sem Docker para a Aplicação)
+## Useful Commands (Docker)
 
-Se preferir rodar a aplicação localmente e apenas o banco no Docker, siga estes passos:
+- **Stop the project:** `docker-compose down`
+- **View application logs:** `docker-compose logs -f web`
+- **Access Django container terminal:** `docker-compose exec web /bin/bash`
+- **Create new migrations:** `docker-compose exec web python manage.py makemigrations`
 
-1. **Suba apenas o banco de dados via Docker:** 
+---
+
+## How to run the project Locally (Without Docker for the Application)
+
+If you prefer to run the application locally and only the database in Docker, follow these steps:
+
+1. **Start only the database via Docker:** 
    ```bash
    docker-compose up -d db
    ```
-2. **Ative sua venv:** 
+2. **Configure Environment Variables:**
+   ```bash
+   cp .env.example .env
+   ```
+   *(Note: Ensure `DB_HOST` in your `.env` is set to `127.0.0.1` and `DB_PORT` is `5433` for local access).*
+3. **Activate your venv:** 
    ```bash
    source .venv/bin/activate
    ```
-3. **Instale as dependências:** 
+4. **Install dependencies:** 
    ```bash
    pip install -r requirements.txt
    ```
-4. **Execute as migrações:** 
+5. **Run migrations:** 
    ```bash
    python manage.py migrate
    ```
-5. **Rode o servidor:** 
+6. **Run the server:** 
    ```bash
    python manage.py runserver 8080
    ```
