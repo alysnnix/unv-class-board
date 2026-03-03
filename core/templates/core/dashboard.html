@@ -1,0 +1,200 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Dashboard | Interactive Panel{% endblock %}
+
+{% block extrastyle %}
+<style>
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Summary Widgets Row -->
+    <div class="row mb-4">
+        <div class="col-lg-4 col-6">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>{{ teachers_count }}</h3>
+                    <p>Registered Teachers</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <a href="/dashboard/core/teacher/" class="small-box-footer">View all <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-6">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>{{ classes_count }}</h3>
+                    <p>Active Class Groups</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <a href="/dashboard/core/classgroup/" class="small-box-footer">View all <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-6">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3 style="color: white">{{ segments_count }}</h3>
+                    <p style="color: white">School Segments</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-school"></i>
+                </div>
+                <a href="/dashboard/core/schoolsegment/" class="small-box-footer" style="color: white !important">View all <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Chart Row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-chart-line mr-1"></i> Occurrences History (Last 6 Months)</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary Charts Row -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card card-success card-outline">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-chart-bar mr-1"></i> Absences by Day of the Week</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card card-danger card-outline">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-chart-pie mr-1"></i> Class Distribution by Period</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Line Chart (Ajax via /chartJSON/)
+    fetch("/chartJSON/")
+        .then(response => response.json())
+        .then(data => {
+            const ctxLine = document.getElementById('lineChart').getContext('2d');
+            
+            // Customizing chart colors from API
+            if(data.datasets.length > 0) {
+                data.datasets[0].borderColor = 'rgba(220, 53, 69, 1)'; // Red (Absences)
+                data.datasets[0].backgroundColor = 'rgba(220, 53, 69, 0.1)';
+                data.datasets[0].fill = true;
+                data.datasets[0].tension = 0.4;
+            }
+            if(data.datasets.length > 1) {
+                data.datasets[1].borderColor = 'rgba(40, 167, 69, 1)'; // Green (Substitutions)
+                data.datasets[1].backgroundColor = 'rgba(40, 167, 69, 0.1)';
+                data.datasets[1].fill = true;
+                data.datasets[1].tension = 0.4;
+            }
+
+            new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: data.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        });
+
+    // 2. Bar Chart (Data injected via Django Context)
+    const ctxBar = document.getElementById('barChart').getContext('2d');
+    new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: {{ bar_labels|safe }},
+            datasets: [{
+                label: 'Registered Occurrences',
+                data: {{ bar_data|safe }},
+                backgroundColor: 'rgba(23, 162, 184, 0.7)', // Info color
+                borderColor: 'rgba(23, 162, 184, 1)',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true } },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // 3. Doughnut/Pie Chart (Data injected via Django Context)
+    const ctxPie = document.getElementById('pieChart').getContext('2d');
+    new Chart(ctxPie, {
+        type: 'doughnut',
+        data: {
+            labels: {{ pie_labels|safe }},
+            datasets: [{
+                data: {{ pie_data|safe }},
+                backgroundColor: [
+                    'rgba(255, 193, 7, 0.8)', // Yellow
+                    'rgba(0, 123, 255, 0.8)', // Blue
+                    'rgba(108, 117, 125, 0.8)' // Gray
+                ],
+                borderWidth: 0,
+                hoverOffset: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right' }
+            },
+            cutout: '60%'
+        }
+    });
+});
+</script>
+{% endblock %}

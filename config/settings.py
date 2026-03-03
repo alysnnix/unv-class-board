@@ -37,10 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home',
-    'mensagem',
-    'ocorrencia',
-    'grade',
+    'core',
+    'communication',
+    'attendance',
+    'schedule',
     'chartjs', 
 ]
 
@@ -137,13 +137,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
-    "site_title": "Painel Interativo",
+    "site_title": "Interactive Panel",
 
     # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_header": "Painel Interativo",
+    "site_header": "Interactive Panel",
 
     # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_brand": "Painel Interativo",
+    "site_brand": "Interactive Panel",
 
   
     # # Logo to use for your site, must be present in static files, used for brand on top left
@@ -162,10 +162,10 @@ JAZZMIN_SETTINGS = {
     # "site_icon": None,
 
     # # Welcome text on the login screen
-    "welcome_sign": "Bem-vindo(a) ao Painel Interativo",
+    "welcome_sign": "Welcome to the Interactive Panel",
 
     # # Copyright on the footer
-    "copyright": 'Painel Interativo',
+    "copyright": 'Interactive Panel',
 
     # # List of model admins to search from the search bar, search bar omitted if excluded
     # # If you want to use a single search field you dont need to use a list, you can use a simple string 
@@ -221,31 +221,25 @@ JAZZMIN_SETTINGS = {
     # "hide_models": [],
 
     # # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
-    #"order_with_respect_to": [ "home", "home.responsavel", "home.crianca", "home.cuidador", "home.registrodiarios", "mensagem",  "auth.user", "auth.group"],
-    "order_with_respect_to": [ "home", "home.segmento", "home.turma", "home.periodo", "home.professor", "home.justificativa", "grade","ocorrencia",  "auth.user", "auth.group"],
-
-
+    "order_with_respect_to": [ "core", "core.schoolsegment", "core.classgroup", "core.schoolperiod", "core.teacher", "core.subject", "core.justification", "schedule","attendance", "communication", "auth.user", "auth.group"],
 
     # # Custom links to append to app groups, keyed on app name
     "custom_links": {
-        "home": [{
-            "name": "Estatísticas e Gráficos", 
-            "url": "line_chart", 
+        "core": [{
+            "name": "Statistics & Charts", 
+            "url": "dashboard_view", 
             "icon": "fas fa-chart-pie",
         }]
     },
 
-    # # Custom icons for side menu apps/models See https://fontawesome.com/icons?d=gallery&m=free&v=5.0.0,5.0.1,5.0.10,5.0.11,5.0.12,5.0.13,5.0.2,5.0.3,5.0.4,5.0.5,5.0.6,5.0.7,5.0.8,5.0.9,5.1.0,5.1.1,5.2.0,5.3.0,5.3.1,5.4.0,5.4.1,5.4.2,5.13.0,5.12.0,5.11.2,5.11.1,5.10.0,5.9.0,5.8.2,5.8.1,5.7.2,5.7.1,5.7.0,5.6.3,5.5.0,5.4.2
-    # # for the full list of 5.13.0 free icon classes
+    # # Custom icons for side menu apps/models 
     "icons": {
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
-        'home.Crianca': 'fa-solid fa-child-dress',
-        'home.Cuidador': 'fa-solid fa-user-tie',
-        'home.Registro_Diario': 'fa-solid fa-calendar-days',
-        'home.Responsavel': 'fa-duotone fa-solid fa-people-roof',
-        'mensagem.Mensagem': 'fa-solid fa-message',
-        'home.Sala' : 'fa-solid fa-school'
+        'core.Teacher': 'fa-solid fa-chalkboard-teacher',
+        'core.ClassGroup': 'fa-solid fa-users',
+        'core.SchoolSegment': 'fa-solid fa-school',
+        'communication.Message': 'fa-solid fa-message',
     },
     # # Icons that are used when one is not manually specified
     # "default_icon_parents": "fas fa-chevron-circle-right",
