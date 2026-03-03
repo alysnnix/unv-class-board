@@ -1,6 +1,27 @@
 # Class Board
 
-Este projeto é uma aplicação Django com PostgreSQL para gerenciamento escolar. 
+Este projeto é uma aplicação Django com PostgreSQL focado na **gestão operacional escolar diária**, servindo como um "Painel Interativo" para secretarias e coordenadores.
+
+O sistema permite gerenciar horários, alocação de professores e controle de faltas/substituições de forma centralizada e ágil.
+
+## Módulos do Sistema (Apps)
+
+O projeto é dividido em 4 módulos principais:
+
+- **Home:** A base do sistema. Serve para cadastrar a infraestrutura da escola: Segmentos (ex: Ensino Fundamental, Médio), Períodos (Manhã, Tarde), Turmas, Professores e as disciplinas (Componentes Curriculares) que eles lecionam.
+- **Grade:** Onde a organização do agendamento acontece. Ele cruza as Turmas com os Professores e os dias da semana para montar a "Grade" (o quadro de horários).
+- **Ocorrência:** O módulo de "gestão de crises". Se um professor falta (`Professor_Ausente`), a secretaria registra o motivo (`Justificativa`) e já aloca um substituto (`Professor_Substituto`) para cobrir a grade.
+- **Mensagem:** Um sistema de comunicação em massa. Permite criar comunicados categorizados (Eventos, Pedagógicos, Administrativos) e direcioná-los para turmas ou professores específicos.
+
+## Funcionalidades e Fluxos
+
+A interface do usuário é construída quase totalmente como uma ferramenta de Back-Office (uso interno) utilizando o tema dinâmico **Django Jazzmin** para o Painel Administrativo. As principais funcionalidades incluem:
+
+1. **Gestão via Admin:** Toda a operação (cadastros, montagem de grade, registro de ocorrências) é feita através de uma interface administrativa bonita e responsiva configurada em `config/settings.py`.
+2. **Geração de Relatórios (PDF):** Integração com a biblioteca `ReportLab` que permite exportar listas e registros selecionados no painel diretamente para formato PDF, prontos para impressão.
+3. **Dashboards Visuais:** O projeto conta com a rota `/chart/` (integrada via `django-chartjs`) preparada para exibir gráficos estatísticos com os dados da escola.
+
+---
 
 ## Requisitos
 
