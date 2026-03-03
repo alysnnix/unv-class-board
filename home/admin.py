@@ -19,7 +19,10 @@ from .models import Professor, Justificativa, Segmento, Turma, \
 try:
     locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')  # Linux/Mac
 except locale.Error:
-    locale.setlocale(locale.LC_TIME, 'Portuguese_Brazil.1252')  # Windows
+    try:
+        locale.setlocale(locale.LC_TIME, 'Portuguese_Brazil.1252')  # Windows
+    except locale.Error:
+        pass  # Fallback to default locale
 
 # --- Função para rodapé com data e nome do usuário ---
 def rodape(canvas, doc):

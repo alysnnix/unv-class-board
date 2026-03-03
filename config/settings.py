@@ -87,7 +87,8 @@ DATABASES = {
         'NAME':  'CLASS-BOARD',
         'USER': 'postgres',
         'PASSWORD': 'root',
-        'PORT': '5432',
+        'PORT': os.environ.get('DB_PORT', '5433'),
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
     }
 }
 
