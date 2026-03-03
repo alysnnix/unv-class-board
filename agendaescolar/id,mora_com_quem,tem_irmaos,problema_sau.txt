@@ -1,3 +1,0 @@
-id,mora_com_quem,tem_irmaos,problema_saude_qual,medicamento_continuo,mendicamento_qual,tem_alergias,alergias_qual,nome,responsavel_id,cep,cidade,numero,rua,data_de_nascimento
-1,Maria,sim,nao,não,nao,nao,nao,Fernando,1,00000-000,são josè dos campos,0,0,5
-2,Sozinha,sim,nao,não,nao,nao,nao,Eva Rebouças Rodrigues,1,00000-000,são josè dos campos,0,0,45

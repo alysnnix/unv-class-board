@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <!-- Background Circle -->
+  <circle cx="250" cy="250" r="230" fill="#0056b3"/>
+  
+  <!-- Stylized Open Book / Schedule Grid -->
+  <path d="M150 180 Q 250 140 250 180 L 250 350 Q 250 310 150 350 Z" fill="#ffffff" opacity="0.9"/>
+  <path d="M350 180 Q 250 140 250 180 L 250 350 Q 250 310 350 350 Z" fill="#f8f9fa" opacity="0.8"/>
+  
+  <!-- Abstract 'L' for Leciona -->
+  <path d="M210 220 L 210 310 L 290 310" fill="none" stroke="#ffc107" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Decorative dots representing students/teachers -->
+  <circle cx="190" cy="250" r="12" fill="#28a745"/>
+  <circle cx="250" cy="230" r="12" fill="#17a2b8"/>
+  <circle cx="310" cy="270" r="12" fill="#dc3545"/>
+</svg>
